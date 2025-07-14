@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: BrushScript;
+    src: url("assets/BrushScriptOpti-Regular.otf") format("opentype");
+}
+
+html {
+  box-sizing: border-box;
+}
