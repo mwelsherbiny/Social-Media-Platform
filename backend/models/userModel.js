@@ -48,7 +48,16 @@ const userModel = {
   getUserPosts: async (id, startId) => {
     const result = await pool.query(
       `
-      SELECT * FROM posts 
+      SELECT posts.*, 
+      (
+        SELECT COUNT(*) FROM post_likes
+        WHERE posts.id = post_likes.post_id
+      ) AS likes_count,
+      (
+        SELECT COUNT(*) FROM comments
+        WHERE posts.id = comments.post_id
+      ) AS comments_count
+      FROM posts 
       WHERE user_id = $1
       AND id > $2
       LIMIT 20;

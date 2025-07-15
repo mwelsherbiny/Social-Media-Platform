@@ -3,16 +3,22 @@ import { useState, useEffect, useRef } from "react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { UseNotification } from "../../contexts/NotificationContext";
 import safeFetch from "../../util/safeFetch";
+import Modal from "@/components/Modals/Modal";
+import PostModal from "@/components/Modals/PostModal";
 
 export default function ProfilePosts({
   maxPosts,
-  userId,
+  profileUser,
   isCurrentUserProfile,
 }) {
   const { setTimedNotification } = UseNotification();
   const [postsData, setPostsData] = useState([]);
   const [isFetching, setIsFetching] = useState(true);
   const startId = useRef(0);
+  const [openedPost, setOpenedPost] = useState(null);
+  const [isPostOpen, setIsPostOpen] = useState(false);
+
+  const userId = profileUser.id;
 
   useEffect(() => {
     setPostsData([]);
@@ -68,6 +74,10 @@ export default function ProfilePosts({
 
   const postsEls = postsData.map((post) => (
     <img
+      onClick={() => {
+        setOpenedPost(post);
+        setIsPostOpen(true);
+      }}
       src={post.image_url}
       key={post.id}
       className="hover:brightness-50 object-cover w-full lg:min-w-72 xl:min-w-96"
@@ -75,8 +85,18 @@ export default function ProfilePosts({
   ));
 
   return (
-    <div className="flex justify-center w-full">
-      <div className="grid grid-cols-3 gap-1">{postsEls}</div>
-    </div>
+    <>
+      <div className="flex justify-center w-full">
+        <div className="grid grid-cols-3 gap-1">{postsEls}</div>
+      </div>
+
+      <Modal isOpen={isPostOpen} setIsOpen={setIsPostOpen} zIndex={10}>
+        <PostModal
+          post={openedPost}
+          profileUser={profileUser}
+          isCurrentUserProfile={isCurrentUserProfile}
+        />
+      </Modal>
+    </>
   );
 }

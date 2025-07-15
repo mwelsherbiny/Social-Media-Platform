@@ -11,10 +11,10 @@ followsRouter.post("/follow/:id", async (req, res) => {
   try {
     await followsModel.followUser(followerId, followedId);
     logger.info(`User ${followerId} followed ${followedId}`);
-    res.status(201).json({ message: "User followed" });
+    return res.status(201).json({ message: "User followed" });
   } catch (error) {
     logger.error("Error during follow operation: " + error.message);
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -25,10 +25,10 @@ followsRouter.delete("/unfollow/:id", async (req, res) => {
   try {
     await followsModel.unfollowUser(followerId, followedId);
     logger.info(`User ${followerId} unfollowed ${followedId}`);
-    res.status(204).send();
+    return res.status(204).send();
   } catch (error) {
     logger.error("Error during follow operation: " + error.message);
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
 

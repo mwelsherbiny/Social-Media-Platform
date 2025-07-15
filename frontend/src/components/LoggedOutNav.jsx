@@ -1,4 +1,5 @@
 import Header from "./Header";
+import HLine from "./HLine";
 
 export default function LoggedOutNav() {
   return (
@@ -9,7 +10,7 @@ export default function LoggedOutNav() {
           Log In
         </button>
       </nav>
-      <hr className="border-gray-300"></hr>
+      <HLine></HLine>
     </>
   );
 }

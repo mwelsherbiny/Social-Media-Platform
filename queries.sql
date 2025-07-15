@@ -1,3 +1,8 @@
+-- Reset Database
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+
+
 -- Feed Query
 -- This query fetches the posts of the users that the logged in user follows,
 -- ordered from most to least recent, with pagnition support using OFFSET

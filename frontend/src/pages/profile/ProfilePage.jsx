@@ -9,6 +9,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { useEffect, useState } from "react";
 import { UseNotification } from "../../contexts/NotificationContext";
 import safeFetch from "../../util/safeFetch";
+import HLine from "../../components/HLine";
 
 export default function ProfilePage() {
   const { user } = useAuth();
@@ -45,9 +46,9 @@ export default function ProfilePage() {
       >
         {isCurrentUserProfile ? <MyProfileActions /> : <ProfileActions />}
       </ProfileHeader>
-      <hr className="border-gray-300 w-full"></hr>
+      <HLine />
       <ProfilePosts
-        userId={profileUser.id}
+        profileUser={profileUser}
         maxPosts={profileUser.postsCount}
         isCurrentUserProfile={isCurrentUserProfile}
       />

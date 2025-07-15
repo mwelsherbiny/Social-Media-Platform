@@ -14,10 +14,10 @@ usersRouter.get("/users/search/:username", async (req, res) => {
       excludeKeys(result, ["password_hash"])
     );
 
-    res.status(200).json({ searchResults: safeSearchResults });
+    return res.status(200).json({ searchResults: safeSearchResults });
   } catch (error) {
     logger.error("Server error during search for user: " + error.message);
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -32,14 +32,14 @@ usersRouter.get("/users/username/:username", async (req, res) => {
     userData.followersCount = await userModel.getUserFollowersCount(userId);
     userData.followingCount = await userModel.getUserFollowingCount(userId);
 
-    res.status(200).json({
+    return res.status(200).json({
       user: userData,
     });
   } catch (error) {
     logger.error(
       `Server error during data fetching for user ${userId}: ${error.message}`
     );
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -51,12 +51,12 @@ usersRouter.get("/users/me", async (req, res) => {
     user.followersCount = await userModel.getUserFollowersCount(user.id);
     user.followingCount = await userModel.getUserFollowingCount(user.id);
 
-    res.status(200).json({ user });
+    return res.status(200).json({ user });
   } catch (error) {
     logger.error(
       `Server error during data fetching for user ${user.id}: ${error.message}`
     );
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -70,14 +70,14 @@ usersRouter.get("/users/id/:id", async (req, res) => {
     userData.followersCount = await userModel.getUserFollowersCount(userId);
     userData.followingCount = await userModel.getUserFollowingCount(userId);
 
-    res.status(200).json({
+    return res.status(200).json({
       user: userData,
     });
   } catch (error) {
     logger.error(
       `Server error during data fetching for user ${userId}: ${error.message}`
     );
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -88,12 +88,12 @@ usersRouter.get("/users/me/posts", async (req, res) => {
 
   try {
     const posts = await userModel.getUserPosts(userId, startId);
-    res.status(200).json({ posts });
+    return res.status(200).json({ posts });
   } catch (error) {
     logger.error(
       `Server error during posts fetching for user ${userId}: ${error.message}`
     );
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -103,12 +103,12 @@ usersRouter.get("/users/:id/posts", async (req, res) => {
 
   try {
     const posts = await userModel.getUserPosts(userId, startId);
-    res.status(200).json({ posts });
+    return res.status(200).json({ posts });
   } catch (error) {
     logger.error(
       `Server error during posts fetching for user ${userId}: ${error.message}`
     );
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
 
