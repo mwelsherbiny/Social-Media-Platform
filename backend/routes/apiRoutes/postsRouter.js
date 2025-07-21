@@ -5,11 +5,12 @@ import logger from "../../util/logger.js";
 const postsRouter = express.Router();
 
 postsRouter.get("/posts/:id/comments", async (req, res) => {
+  const userId = req.user.id;
   const postId = req.params.id;
-  const startId = req.query.startId ?? 0;
+  const offset = Number(req.query.offset) ?? 0;
 
   try {
-    const comments = await postsModel.getPostComments(postId, startId);
+    const comments = await postsModel.getPostComments(postId, userId, offset);
 
     return res.status(200).json({ comments });
   } catch (error) {
@@ -18,11 +19,13 @@ postsRouter.get("/posts/:id/comments", async (req, res) => {
   }
 });
 
-postsRouter.post("/posts/comments", async (req, res) => {
-  const { postId, userId, parentId, content } = req.body;
+postsRouter.post("/posts/:id/comments", async (req, res) => {
+  const postId = req.params.id;
+  const userId = req.user.id;
+  const { parentId, content } = req.body;
 
-  if (!postId || !userId || !content) {
-    return res.status(400).json({ error: "Invalid data" });
+  if (!content) {
+    return res.status(400).json({ error: "Missing data" });
   }
 
   try {
@@ -42,28 +45,9 @@ postsRouter.post("/posts/comments", async (req, res) => {
   }
 });
 
-postsRouter.delete("/posts/comments", async (req, res) => {
-  const { commentId } = req.body;
-
-  if (!commentId) {
-    return res.status(400).json({ error: "Invalid data" });
-  }
-
-  try {
-    await postsModel.delete(commentId);
-    return res.sendStatus(204);
-  } catch (error) {
-    logger.error("Error during deleting post comment: " + error.message);
-    return res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-postsRouter.post("/posts/likes", async (req, res) => {
-  const { postId, userId } = req.body;
-
-  if (!postId || !userId) {
-    return res.status(400).json({ error: "Invalid data" });
-  }
+postsRouter.post("/posts/:id/likes", async (req, res) => {
+  const postId = req.params.id;
+  const userId = req.user.id;
 
   try {
     await postsModel.addPostLike({ postId, userId });
@@ -74,52 +58,15 @@ postsRouter.post("/posts/likes", async (req, res) => {
   }
 });
 
-postsRouter.delete("/posts/likes", async (req, res) => {
-  const { postId, userId } = req.body;
-
-  if (!postId || !userId) {
-    return res.status(400).json({ error: "Invalid data" });
-  }
+postsRouter.delete("/posts/:id/likes", async (req, res) => {
+  const postId = req.params.id;
+  const userId = req.user.id;
 
   try {
     await postsModel.deletePostLike({ postId, userId });
     return res.sendStatus(204);
   } catch (error) {
     logger.error("Error during deleting post like: " + error.message);
-    return res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-postsRouter.post("/posts/comments/likes", async (req, res) => {
-  const { commentId, userId } = req.body;
-
-  if (!commentId || !userId) {
-    return res.status(400).json({ error: "Invalid data" });
-  }
-
-  try {
-    await postsModel.addCommentLike({ commentId, userId });
-    return res
-      .status(201)
-      .json({ message: "Successfully added like to comment" });
-  } catch (error) {
-    logger.error("Error during adding comment like: " + error.message);
-    return res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-postsRouter.delete("/posts/comments/likes", async (req, res) => {
-  const { commentId, userId } = req.body;
-
-  if (!commentId || !userId) {
-    return res.status(400).json({ error: "Invalid data" });
-  }
-
-  try {
-    await postsModel.deleteCommentLike({ commentId, userId });
-    return res.sendStatus(204);
-  } catch (error) {
-    logger.error("Error during deleting like: " + error.message);
     return res.status(500).json({ error: "Internal server error" });
   }
 });

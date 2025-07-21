@@ -2,13 +2,13 @@ import { Routes, Route } from "react-router-dom";
 import Layout from "./layouts/Layout.jsx";
 import MainLayout from "@/layouts/MainLayout.jsx";
 import LoggedOutLayout from "@/layouts/LoggedOutLayout.jsx";
-import AuthPage from "@/pages/AuthPage.jsx";
+import AuthPage from "@/pages/auth/AuthPage.jsx";
 import HomePage from "@/pages/home/HomePage.jsx";
-import ExplorePage from "@/pages/ExplorePage.jsx";
-import MessagesPage from "@/pages/MessagesPage.jsx";
+import ExplorePage from "@/pages/explore/ExplorePage.jsx";
+import MessagesPage from "@/pages/messages/MessagesPage.jsx";
 import ProfilePage from "@/pages/profile/ProfilePage.jsx";
-import SettingsPage from "@/pages/SettingsPage.jsx";
-import Search from "@/components/Search.jsx";
+import SettingsPage from "@/pages/settings/SettingsPage.jsx";
+import Search from "@/pages/search/Search.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 import { useAuth } from "./contexts/AuthContext.js";
 

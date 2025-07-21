@@ -15,6 +15,7 @@ export default function ProfilePosts({
   const [postsData, setPostsData] = useState([]);
   const [isFetching, setIsFetching] = useState(true);
   const startId = useRef(0);
+  const usedStartIds = useRef(new Set());
   const [openedPost, setOpenedPost] = useState(null);
   const [isPostOpen, setIsPostOpen] = useState(false);
 
@@ -24,6 +25,7 @@ export default function ProfilePosts({
     setPostsData([]);
     setIsFetching(true);
     startId.current = 0;
+    usedStartIds.current = new Set();
   }, [userId]);
 
   useEffect(() => {
@@ -42,7 +44,9 @@ export default function ProfilePosts({
 
   useEffect(() => {
     async function fetchData() {
-      if (isFetching) {
+      if (isFetching && !usedStartIds.current.has(startId.current)) {
+        usedStartIds.current.add(startId.current);
+
         let result = isCurrentUserProfile
           ? await userService.getCurrentUserPosts(startId.current)
           : await userService.getUserPostsById(userId, startId.current);
@@ -52,7 +56,9 @@ export default function ProfilePosts({
           const postIdSet = new Set(prev.map((post) => post.id));
           result = result.filter((post) => !postIdSet.has(post.id));
 
-          startId.current = prev.length + result.length;
+          if (!result || result.length === 0) return prev;
+
+          startId.current = result.at(-1)?.id ?? prev.at(-1)?.id;
 
           return [...prev, ...result];
         });

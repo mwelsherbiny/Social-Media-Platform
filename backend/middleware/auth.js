@@ -1,7 +1,7 @@
 import logger from "../util/logger.js";
 import jwt from "jsonwebtoken";
 
-const authMiddware = (req, res, next) => {
+const auth = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
@@ -18,4 +18,4 @@ const authMiddware = (req, res, next) => {
   }
 };
 
-export default authMiddware;
+export default auth;

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import NavItem from "@/components/NavItem.jsx";
+import NavItem from "./NavItem.jsx";
 import { NavIconProvider } from "@/contexts/NavIconContext.jsx";
-import ProfileIcon from "@/components/ProfileIcon.jsx";
+import ProfileIcon from "@/pages/profile/ProfileIcon.jsx";
 import { GoHome } from "react-icons/go";
 import { GoHomeFill } from "react-icons/go";
 import { IoSearchOutline } from "react-icons/io5";
@@ -12,7 +12,7 @@ import { IoPaperPlaneOutline } from "react-icons/io5";
 import { IoPaperPlane } from "react-icons/io5";
 import { MdOutlineAddBox } from "react-icons/md";
 import { MdAddBox } from "react-icons/md";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function NavBar() {
   let { user } = useAuth();

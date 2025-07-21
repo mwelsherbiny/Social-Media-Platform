@@ -1,6 +1,6 @@
 import logger from "../util/logger.js";
 
-const loggerMiddleware = (req, res, next) => {
+const requestLogger = (req, res, next) => {
   const start = Date.now();
 
   res.on("finish", () => {
@@ -14,4 +14,4 @@ const loggerMiddleware = (req, res, next) => {
   next();
 };
 
-export default loggerMiddleware;
+export default requestLogger;

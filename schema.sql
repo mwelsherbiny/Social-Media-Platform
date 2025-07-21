@@ -35,6 +35,7 @@ CREATE TABLE comments (
 );
 
 CREATE TABLE post_likes (
+    id SERIAL PRIMARY KEY,
     post_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -44,6 +45,7 @@ CREATE TABLE post_likes (
 );
 
 CREATE TABLE comment_likes (
+    id SERIAL PRIMARY KEY,
     comment_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

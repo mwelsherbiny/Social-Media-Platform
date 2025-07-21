@@ -2,7 +2,8 @@ import "./config.js";
 import express from "express";
 import logger from "./util/logger.js";
 import cors from "cors";
-import requestLoggerMiddleware from "./middleware/requestLoggerMiddleware.js";
+import requestLogger from "./middleware/requestLogger.js";
+import checkPostBody from "./middleware/checkPostBody.js";
 import authRouter from "./routes/authRouter.js";
 import apiRouter from "./routes/apiRouter.js";
 import shutdown from "./util/shutdown.js";
@@ -15,7 +16,8 @@ app.use(
   })
 );
 app.use(express.json());
-app.use(requestLoggerMiddleware);
+app.use(requestLogger);
+app.use(checkPostBody);
 app.use("/auth", authRouter);
 app.use("/api", apiRouter);
 app.use((req, res) => {

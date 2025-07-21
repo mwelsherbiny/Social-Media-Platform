@@ -1,26 +1,45 @@
 import pool from "../db.js";
 
 const postsModel = {
-  getPostComments: async (postId, startId) => {
-    const commentsCount = startId === 0 ? 10 : 5;
+  getPostComments: async (postId, userId, offset) => {
+    const commentsCount = offset === 0 ? 10 : 5;
 
     const result = await pool.query(
       `
-        SELECT comments.*, 
-        EXISTS (
-            SELECT 1 FROM comment_replies
-            WHERE comments.id = comment_replies.comment_id
-        ) AS has_replies,
-        (
-            SELECT COUNT(*) FROM comment_likes
-            WHERE comments.id = comment_likes.comment_id
-        ) AS likes_count
-        FROM comments
-            WHERE post_id = $1 
-            AND id > $2
-            LIMIT $3;
+      SELECT
+          comments.*,
+          users.username,
+          users.profile_picture_url,
+          EXISTS 
+            (
+              SELECT 1 FROM comment_likes 
+              WHERE user_id = $1
+              AND comment_id = comments.id 
+            )
+          AS liked_by_user,
+          COUNT(DISTINCT comment_likes.id) AS likes_count,
+          COUNT(DISTINCT replies.id) AS replies_count
+      FROM
+          comments
+      JOIN
+          users ON comments.user_id = users.id
+      LEFT JOIN
+          comment_likes ON comments.id = comment_likes.comment_id
+      LEFT JOIN
+          comments AS replies ON comments.id = replies.parent_id
+      WHERE
+          comments.post_id = $2
+          AND comments.parent_id IS NULL
+      GROUP BY
+          comments.id,
+          users.username,
+          users.profile_picture_url
+      ORDER BY
+          likes_count DESC,
+          comments.created_at DESC
+      LIMIT $3 OFFSET $4;
         `,
-      [postId, startId, commentsCount]
+      [userId, postId, commentsCount, offset]
     );
 
     return result.rows;

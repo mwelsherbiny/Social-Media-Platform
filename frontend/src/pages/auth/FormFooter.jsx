@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import HLine from "./HLine";
+import HLine from "@/components/HLine";
 
 export default function FormFooter({ children }) {
   return (

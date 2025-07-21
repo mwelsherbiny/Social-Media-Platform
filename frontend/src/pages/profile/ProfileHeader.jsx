@@ -1,8 +1,13 @@
-import ProfileIcon from "../../components/ProfileIcon";
+import ProfileIcon from "./ProfileIcon";
 import MyProfileActions from "./MyProfileActions";
 import ProfileActions from "./ProfileActions";
+import { useState } from "react";
 
 export default function ProfileHeader({ profileUser, isCurrentUserProfile }) {
+  const [followersCount, setFollowersCount] = useState(
+    profileUser.followersCount
+  );
+
   return (
     <div className="flex flex-row gap-8">
       <ProfileIcon size="8rem" src={profileUser.profile_picture_url} />
@@ -12,7 +17,10 @@ export default function ProfileHeader({ profileUser, isCurrentUserProfile }) {
           {isCurrentUserProfile ? (
             <MyProfileActions />
           ) : (
-            <ProfileActions userId={profileUser.id} />
+            <ProfileActions
+              userId={profileUser.id}
+              setFollowersCount={setFollowersCount}
+            />
           )}
         </div>
         <div className="flex flex-row items-center gap-4">
@@ -20,7 +28,7 @@ export default function ProfileHeader({ profileUser, isCurrentUserProfile }) {
             <strong>{profileUser.postsCount}</strong> posts
           </p>
           <p>
-            <strong>{profileUser.followersCount}</strong> followers
+            <strong>{followersCount}</strong> followers
           </p>
           <p>
             <strong>{profileUser.followingCount}</strong> following

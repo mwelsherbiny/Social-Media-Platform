@@ -1,5 +1,5 @@
-import Header from "./Header";
-import HLine from "./HLine";
+import Header from "../Header";
+import HLine from "../HLine";
 
 export default function LoggedOutNav() {
   return (

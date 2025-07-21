@@ -21,6 +21,23 @@ usersRouter.get("/users/search/:username", async (req, res) => {
   }
 });
 
+usersRouter.get("/users/me", async (req, res) => {
+  let user = req.user;
+
+  try {
+    user.postsCount = await userModel.getUserPostsCount(user.id);
+    user.followersCount = await userModel.getUserFollowersCount(user.id);
+    user.followingCount = await userModel.getUserFollowingCount(user.id);
+
+    return res.status(200).json({ user });
+  } catch (error) {
+    logger.error(
+      `Server error during data fetching for user ${user.id}: ${error.message}`
+    );
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 usersRouter.get("/users/username/:username", async (req, res) => {
   let username = req.params.username;
 
@@ -38,23 +55,6 @@ usersRouter.get("/users/username/:username", async (req, res) => {
   } catch (error) {
     logger.error(
       `Server error during data fetching for user ${userId}: ${error.message}`
-    );
-    return res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-usersRouter.get("/users/me", async (req, res) => {
-  let user = req.user;
-
-  try {
-    user.postsCount = await userModel.getUserPostsCount(user.id);
-    user.followersCount = await userModel.getUserFollowersCount(user.id);
-    user.followingCount = await userModel.getUserFollowingCount(user.id);
-
-    return res.status(200).json({ user });
-  } catch (error) {
-    logger.error(
-      `Server error during data fetching for user ${user.id}: ${error.message}`
     );
     return res.status(500).json({ error: "Internal server error" });
   }
@@ -109,6 +109,45 @@ usersRouter.get("/users/:id/posts", async (req, res) => {
       `Server error during posts fetching for user ${userId}: ${error.message}`
     );
     return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+usersRouter.post("/users/me/posts", async (req, res) => {
+  const userId = req.user.id;
+  const { imageUrl, caption } = req.body;
+
+  if (!imageUrl || !caption) {
+    return res.status(400).json({ error: "Missing data" });
+  }
+
+  try {
+    const postId = await userModel.addUserPost(userId, { imageUrl, caption });
+
+    return res
+      .status(201)
+      .json({ id: postId, message: "Successfully added new post" });
+  } catch (error) {
+    logger.error("Error during adding post: " + error.message);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+usersRouter.get("/users/:id/is-following", async (req, res) => {
+  const followerUserId = req.user.id;
+  const followedUserId = req.params.id;
+
+  try {
+    const isFollowing = await userModel.isFollowing(
+      followerUserId,
+      followedUserId
+    );
+
+    res.status(200).json({ isFollowing });
+  } catch (error) {
+    logger.error(
+      "Error while checking if user is following another: " + error.message
+    );
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

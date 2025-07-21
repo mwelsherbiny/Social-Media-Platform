@@ -4,7 +4,7 @@ import logger from "../../util/logger.js";
 
 const followsRouter = express.Router();
 
-followsRouter.post("/follow/:id", async (req, res) => {
+followsRouter.post("/follows/:id", async (req, res) => {
   const followerId = req.user.id;
   const followedId = req.params.id;
 
@@ -18,14 +18,14 @@ followsRouter.post("/follow/:id", async (req, res) => {
   }
 });
 
-followsRouter.delete("/unfollow/:id", async (req, res) => {
+followsRouter.delete("/follows/:id", async (req, res) => {
   const followerId = req.user.id;
   const followedId = req.params.id;
-
+ 
   try {
     await followsModel.unfollowUser(followerId, followedId);
     logger.info(`User ${followerId} unfollowed ${followedId}`);
-    return res.status(204).send();
+    return res.sendStatus(204);
   } catch (error) {
     logger.error("Error during follow operation: " + error.message);
     return res.status(500).json({ error: "Internal server error" });

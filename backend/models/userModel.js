@@ -56,6 +56,7 @@ const userModel = {
       (
         SELECT COUNT(*) FROM comments
         WHERE posts.id = comments.post_id
+        AND comments.parent_id IS NULL
       ) AS comments_count
       FROM posts 
       WHERE user_id = $1
@@ -93,6 +94,32 @@ const userModel = {
     );
 
     return parseInt(result.rows[0].count);
+  },
+
+  addUserPost: async (userId, post) => {
+    const result = await pool.query(
+      `
+        INSERT INTO posts(user_id, image_url, caption) 
+        VALUES($1, $2, $3)
+        RETURNING id;
+      `,
+      [userId, post.imageUrl, post.caption]
+    );
+
+    return result.rows[0].id;
+  },
+
+  isFollowing: async (followerUserId, followedUserId) => {
+    const result = await pool.query(
+      `
+        SELECT 1 FROM follows 
+        WHERE follower_id = $1
+        AND followed_id = $2
+      `,
+      [followerUserId, followedUserId]
+    );
+
+    return result.rows.length > 0;
   },
 };
 

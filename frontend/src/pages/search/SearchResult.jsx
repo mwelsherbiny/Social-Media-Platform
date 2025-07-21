@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import userService from "../services/userService";
-import ProfileIcon from "./ProfileIcon";
+import userService from "../../services/userService";
+import ProfileIcon from "../profile/ProfileIcon";
 import { Link } from "react-router";
-import { UseNotification } from "../contexts/NotificationContext";
+import { UseNotification } from "../../contexts/NotificationContext";
 import safeFetch from "@/util/safeFetch";
 
 export default function SearchResult({ searchValue }) {

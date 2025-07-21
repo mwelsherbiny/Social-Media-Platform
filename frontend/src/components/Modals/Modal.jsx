@@ -1,8 +1,16 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 
 export default function Modal({ isOpen, setIsOpen, children, size, zIndex }) {
   const modalBackgroundRef = useRef(null);
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
 
   function handleClick(e) {
     const clickedEl = e.target;

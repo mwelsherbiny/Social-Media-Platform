@@ -5,8 +5,9 @@ const API_ROUTES = Object.freeze({
   },
   API: {
     USERS: "/api/users",
-    FOLLOW: "/follow/",
-    UNFOLLOW: "/follow/"
+    FOLLOWS: "api/follows",
+    POSTS: "api/posts",
+    COMMENTS: "/api/comments",
   },
 });
 
