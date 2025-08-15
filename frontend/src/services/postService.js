@@ -11,6 +11,7 @@ const postService = {
   },
 
   addPostComment: async ({ postId, content, parentId = null }) => {
+    console.log(postId);
     const result = await mainApi.post(
       `${API_ROUTES.API.POSTS}/${postId}/comments`,
       {
@@ -20,6 +21,14 @@ const postService = {
     );
 
     return result.data.id;
+  },
+
+  getPostLikeDetails: async (postId) => {
+    const results = await mainApi.get(
+      `${API_ROUTES.API.POSTS}/${postId}/likes_details`
+    );
+
+    return results.data;
   },
 
   addPostLike: async (postId) => {

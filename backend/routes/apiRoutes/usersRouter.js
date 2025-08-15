@@ -22,14 +22,16 @@ usersRouter.get("/users/search/:username", async (req, res) => {
 });
 
 usersRouter.get("/users/me", async (req, res) => {
-  let user = req.user;
+  let userId = req.user.id;
 
   try {
-    user.postsCount = await userModel.getUserPostsCount(user.id);
-    user.followersCount = await userModel.getUserFollowersCount(user.id);
-    user.followingCount = await userModel.getUserFollowingCount(user.id);
+    let userData = await userModel.getUserById(userId);
+    userData = excludeKeys(userData, ["password_hash"]);
+    userData.postsCount = await userModel.getUserPostsCount(userId);
+    userData.followersCount = await userModel.getUserFollowersCount(userId);
+    userData.followingCount = await userModel.getUserFollowingCount(userId);
 
-    return res.status(200).json({ user });
+    return res.status(200).json({ user: userData });
   } catch (error) {
     logger.error(
       `Server error during data fetching for user ${user.id}: ${error.message}`

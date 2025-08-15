@@ -7,6 +7,7 @@ const maxNotifications = 20;
 export default function NotificationProvider({ children }) {
   const [notifications, setNotifications] = useState([]);
 
+  // notification: {id, type, text}
   const setTimedNotification = (notification, time = 5000) => {
     if (notifications.length < maxNotifications) {
       notification.id = uuidv4();

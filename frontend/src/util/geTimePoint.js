@@ -5,31 +5,33 @@ const weekSeconds = daySeconds * 7;
 const monthSeconds = weekSeconds * 4;
 const yearSeconds = monthSeconds * 12;
 
-export default function getTimeElapsedString(dateOfCreationString) {
-  const secondsDiff = Math.round(
-    (new Date() - new Date(dateOfCreationString)) / 1000
-  );
+function pluralize(item, quantity) {
+  return quantity !== 1 ? `${item}s` : item;
+}
 
-  if (secondsDiff <= 0) return "0s";
+export default function getTimePointString(date) {
+  let currDate = new Date();
+  const secondsDiff = (currDate - date) / 1000;
 
-  if (secondsDiff < minuteSeconds) return `${secondsDiff}s`;
-  else if (secondsDiff < hourSeconds) {
+  if (secondsDiff <= 0 || secondsDiff < minuteSeconds) {
+    return "Just now";
+  } else if (secondsDiff < hourSeconds) {
     const minutesDiff = Math.floor(secondsDiff / minuteSeconds);
-    return `${minutesDiff}m`;
+    return `${minutesDiff} ${pluralize("minute", minutesDiff)} ago`;
   } else if (secondsDiff < daySeconds) {
     const hoursDiff = Math.floor(secondsDiff / hourSeconds);
-    return `${hoursDiff}h`;
+    return `${hoursDiff} ${pluralize("hour", hoursDiff)} ago`;
   } else if (secondsDiff < weekSeconds) {
     const daysDiff = Math.floor(secondsDiff / daySeconds);
-    return `${daysDiff}d`;
+    return `${daysDiff} ${pluralize("day", daysDiff)} ago`;
   } else if (secondsDiff < monthSeconds) {
     const weeksDiff = Math.floor(secondsDiff / weekSeconds);
-    return `${weeksDiff}w`;
+    return `${weeksDiff} ${pluralize("week", weeksDiff)} ago`;
   } else if (secondsDiff < yearSeconds) {
     const monthsDiff = Math.floor(secondsDiff / monthSeconds);
-    return `${monthsDiff}m`;
+    return `${monthsDiff} ${pluralize("month", monthsDiff)} ago`;
   } else {
     const yearsDiff = Math.floor(secondsDiff / yearSeconds);
-    return `${yearsDiff}y`;
+    return `${yearsDiff} ${pluralize("year", yearsDiff)} ago`;
   }
 }

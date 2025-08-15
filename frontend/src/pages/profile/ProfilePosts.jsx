@@ -76,6 +76,7 @@ export default function ProfilePosts({
     userId,
   ]);
 
+  if (maxPosts === 0) return null;
   if (postsData.length === 0) return <LoadingSpinner />;
 
   const postsEls = postsData.map((post) => (
@@ -96,13 +97,15 @@ export default function ProfilePosts({
         <div className="grid grid-cols-3 gap-1">{postsEls}</div>
       </div>
 
-      <Modal isOpen={isPostOpen} setIsOpen={setIsPostOpen} zIndex={10}>
-        <PostModal
-          post={openedPost}
-          profileUser={profileUser}
-          isCurrentUserProfile={isCurrentUserProfile}
-        />
-      </Modal>
+      {isPostOpen && (
+        <Modal isOpen={isPostOpen} setIsOpen={setIsPostOpen} zIndex={10}>
+          <PostModal
+            openedPost={openedPost}
+            profileUser={profileUser}
+            isCurrentUserProfile={isCurrentUserProfile}
+          />
+        </Modal>
+      )}
     </>
   );
 }

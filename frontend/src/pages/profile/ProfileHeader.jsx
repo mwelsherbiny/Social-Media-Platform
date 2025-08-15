@@ -23,7 +23,7 @@ export default function ProfileHeader({ profileUser, isCurrentUserProfile }) {
             />
           )}
         </div>
-        <div className="flex flex-row items-center gap-4">
+        <div className="flex flex-col md:flex-row items-start gap-4">
           <p>
             <strong>{profileUser.postsCount}</strong> posts
           </p>

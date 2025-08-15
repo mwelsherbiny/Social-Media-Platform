@@ -17,7 +17,9 @@ export default function Modal({ isOpen, setIsOpen, children, size, zIndex }) {
     if (modalBackgroundRef.current === clickedEl) setIsOpen(false);
   }
 
-  if (!size) size = { width: "85%", height: "90%" };
+  const sizeStyle = size
+    ? `w-[${size.width}] h-[${size.height}] ]`
+    : "w-[70%] h-[75%] md:w-[85%] md:h-[90%]";
   if (!isOpen) return null;
 
   return createPortal(
@@ -37,8 +39,8 @@ export default function Modal({ isOpen, setIsOpen, children, size, zIndex }) {
           &times;
         </button>
         <div
-          className="flex justify-center items-center"
-          style={{ ...size, zIndex }}
+          className={`flex justify-center items-center ${sizeStyle}`}
+          style={{ zIndex }}
         >
           {children}
         </div>

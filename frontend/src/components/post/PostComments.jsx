@@ -2,20 +2,21 @@ import { useEffect, useRef, useState } from "react";
 import postService from "../../services/postService";
 import safeFetch from "@/util/safeFetch.js";
 import { UseNotification } from "@/contexts/NotificationContext";
-import { IconContext } from "react-icons/lib";
-import { IoIosAddCircleOutline } from "react-icons/io";
-import PostEntry from "./PostEntry";
 import LoadingSpinner from "./../LoadingSpinner";
-import { GoHeart } from "react-icons/go";
-import { GoHeartFill } from "react-icons/go";
+import LoadCommentsButton from "./LoadCommentsButton";
+import CommentReplies from "./CommentReplies";
+import PostComment from "./PostComment";
 
-export default function PostComments({ post, profileUser, commentsCount }) {
+export default function PostComments({
+  comments,
+  setComments,
+  postId,
+  commentsCount,
+  setComment,
+}) {
   const { setTimedNotification } = UseNotification();
-  const [comments, setComments] = useState(new Map());
-  const [repliesVisible, setRepliesVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const offset = useRef(0);
-  const postId = post.id;
 
   useEffect(() => {
     if (isFetching) {
@@ -45,11 +46,11 @@ export default function PostComments({ post, profileUser, commentsCount }) {
       );
     }
   }, [
-    comments.length,
     comments.size,
     commentsCount,
     isFetching,
     postId,
+    setComments,
     setTimedNotification,
   ]);
 
@@ -64,34 +65,12 @@ export default function PostComments({ post, profileUser, commentsCount }) {
 
   const commentsEls = Array.from(comments.values()).map((comment) => {
     return (
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-row justify-between" key={comment.id}>
-          <PostEntry
-            entry={comment}
-            profileUser={profileUser}
-            entryType={"comment"}
-          />
-          <button className="cursor-pointer self-start">
-            {comment.liked_by_user ? (
-              <GoHeartFill color="#ed4956" />
-            ) : (
-              <div className="hover:text-gray-500">
-                <GoHeart />
-              </div>
-            )}
-          </button>
-        </div>
-        {comment.replies_count > 0 ? (
-          <div className="flex flex-row items-center gap-2 ml-12">
-            <hr className="w-6"></hr>
-            <button
-              className="text-gray-500 font-medium text-sm cursor-pointer"
-              onClick={() => setRepliesVisible(true)}
-            >
-              View replies ({comment.replies_count})
-            </button>{" "}
-          </div>
-        ) : null}
+      <div className="flex flex-col gap-4" key={comment.id}>
+        <PostComment comment={comment} setComment={setComment} />
+        <CommentReplies
+          parentId={comment.id}
+          commentRepliesCount={comment.replies_count}
+        />
       </div>
     );
   });
@@ -102,17 +81,7 @@ export default function PostComments({ post, profileUser, commentsCount }) {
       {comments.size === commentsCount ? null : isFetching ? (
         <LoadingSpinner />
       ) : (
-        <IconContext.Provider
-          value={{
-            size: "2rem",
-            style: { alignSelf: "center", cursor: "pointer" },
-          }}
-        >
-          <IoIosAddCircleOutline
-            onClick={loadComments}
-            className="hover:text-gray-500"
-          />
-        </IconContext.Provider>
+        <LoadCommentsButton loadComments={loadComments} />
       )}
     </div>
   );

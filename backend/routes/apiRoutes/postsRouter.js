@@ -36,11 +36,26 @@ postsRouter.post("/posts/:id/comments", async (req, res) => {
       content,
     });
 
-    res
-      .status(201)
-      .json({ id: commentId, message: "Successfully added comment" });
+    res.status(201).json({
+      id: commentId,
+      message: "Successfully added comment",
+    });
   } catch (error) {
     logger.error("Error during adding post comment: " + error.message);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+postsRouter.get("/posts/:id/likes_details", async (req, res) => {
+  const postId = req.params.id;
+  const userId = req.user.id;
+
+  try {
+    const likesDetails = await postsModel.getPostLikesDetails(postId, userId);
+    likesDetails.likes_count = parseInt(likesDetails.likes_count);
+    return res.status(200).json(likesDetails);
+  } catch (error) {
+    logger.error("Error during adding post like: " + error.message);
     return res.status(500).json({ error: "Internal server error" });
   }
 });

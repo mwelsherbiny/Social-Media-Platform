@@ -63,16 +63,6 @@ const postsModel = {
     return result.rows[0].id;
   },
 
-  deletePostComment: async (commentId) => {
-    await pool.query(
-      `
-            DELETE FROM comments
-            WHERE id=$1
-        `,
-      [commentId]
-    );
-  },
-
   addPostLike: async (likeData) => [
     await pool.query(
       `
@@ -94,25 +84,26 @@ const postsModel = {
     );
   },
 
-  addCommentLike: async (likeData) => [
-    await pool.query(
+  getPostLikesDetails: async (postId, userId) => {
+    const result = await pool.query(
       `
-            INSERT INTO comment_likes(comment_id, user_id)
-            VALUES($1, $2)
-        `,
-      [likeData.commentId, likeData.userId]
-    ),
-  ],
-
-  deleteCommentLike: async (likeData) => {
-    await pool.query(
-      `
-            DELETE FROM comment_likes
-            WHERE comment_id = $1
-            AND user_id = $2
-        `,
-      [likeData.commentId, likeData.userId]
+        SELECT (
+          SELECT COUNT(*) FROM post_likes
+          WHERE post_id = $1
+        ) AS likes_count, 
+        (
+          SELECT EXISTS 
+          (
+            SELECT 1 FROM post_likes 
+            WHERE user_id = $2
+            AND post_id = $1
+          ) 
+        ) AS liked_by_logged_user
+      `,
+      [postId, userId]
     );
+
+    return result.rows[0];
   },
 };
 

@@ -50,10 +50,6 @@ const userModel = {
       `
       SELECT posts.*, 
       (
-        SELECT COUNT(*) FROM post_likes
-        WHERE posts.id = post_likes.post_id
-      ) AS likes_count,
-      (
         SELECT COUNT(*) FROM comments
         WHERE posts.id = comments.post_id
         AND comments.parent_id IS NULL
