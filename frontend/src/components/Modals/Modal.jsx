@@ -18,8 +18,9 @@ export default function Modal({ isOpen, setIsOpen, children, size, zIndex }) {
   }
 
   const sizeStyle = size
-    ? `w-[${size.width}] h-[${size.height}] ]`
-    : "w-[70%] h-[75%] md:w-[85%] md:h-[90%]";
+    ? `w-[${size.width}] h-[${size.height}] `
+    : "w-[95%] h-[85%] md:w-[80%] md:h-[80%] lg:w-[70%] lg:h-[75%]";
+
   if (!isOpen) return null;
 
   return createPortal(

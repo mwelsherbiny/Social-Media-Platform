@@ -11,6 +11,15 @@ followsRouter.post("/follows/:id", async (req, res) => {
   try {
     await followsModel.followUser(followerId, followedId);
     logger.info(`User ${followerId} followed ${followedId}`);
+
+    // Add follow to notifications
+    const notification = {
+      userId: followedId,
+      actorId: followerId,
+      type: notificationTypes.POST_LIKE,
+    };
+    await notificationsModel.addNotification(notification);
+
     return res.status(201).json({ message: "User followed" });
   } catch (error) {
     logger.error("Error during follow operation: " + error.message);
@@ -21,7 +30,7 @@ followsRouter.post("/follows/:id", async (req, res) => {
 followsRouter.delete("/follows/:id", async (req, res) => {
   const followerId = req.user.id;
   const followedId = req.params.id;
- 
+
   try {
     await followsModel.unfollowUser(followerId, followedId);
     logger.info(`User ${followerId} unfollowed ${followedId}`);

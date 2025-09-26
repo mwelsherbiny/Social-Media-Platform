@@ -15,11 +15,12 @@ export default function CommentForm({
   }
 
   async function postComment() {
-    const { id: newCommentId } = await postService.addPostComment({
+    const newCommentId = await postService.addPostComment({
       postId: post.id,
       content: comment.content,
       parentId: comment.parentId,
     });
+
     setComment({ content: "", parentId: null });
 
     setComments((prev) => {
@@ -39,6 +40,8 @@ export default function CommentForm({
       });
 
       if (comment.parentId) {
+        console.log(comment.parentId);
+
         const parentComment = updatedComments.get(comment.parentId);
 
         updatedComments.set(comment.parentId, {
@@ -57,15 +60,15 @@ export default function CommentForm({
 
   return (
     <div className="p-4 flex flex-row justify-between">
-      <input
+      <textarea
         type="text"
-        className="focus:outline-none"
+        className="focus:outline-none w-full resize-none"
         placeholder="Add a comment..."
         value={comment.content}
         onChange={(e) => updateComment(e.target.value)}
       />
       <button
-        className={`text-blue-500 font-semibold ${
+        className={`self-start text-blue-500 font-semibold ${
           isEmpty ? "" : "cursor-pointer"
         } opacity-${isEmpty ? 50 : 100}`}
         onClick={postComment}

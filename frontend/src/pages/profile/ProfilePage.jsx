@@ -15,9 +15,20 @@ export default function ProfilePage() {
   const { user } = useAuth();
   const { username } = useParams();
   const isCurrentUserProfile = user.username === username;
-
   const { setTimedNotification } = UseNotification();
   const [profileUser, setProfileUser] = useState(null);
+
+  function decrementPostCount() {
+    setProfileUser((prev) => {
+      return { ...prev, postsCount: prev.postsCount - 1 };
+    });
+  }
+
+  function incrementPostCount() {
+    setProfileUser((prev) => {
+      return { ...prev, postsCount: prev.postsCount + 1 };
+    });
+  }
 
   useEffect(() => {
     async function fetchData() {
@@ -51,6 +62,8 @@ export default function ProfilePage() {
         profileUser={profileUser}
         maxPosts={profileUser.postsCount}
         isCurrentUserProfile={isCurrentUserProfile}
+        incrementPostCount={incrementPostCount}
+        decrementPostCount={decrementPostCount}
       />
     </div>
   );

@@ -2,6 +2,7 @@ import express from "express";
 import userModel from "../../models/userModel.js";
 import logger from "../../util/logger.js";
 import excludeKeys from "../../util/excludeKeys.js";
+import notificationsModel from "../../models/notificationsModel.js";
 
 const usersRouter = express.Router();
 
@@ -86,7 +87,7 @@ usersRouter.get("/users/id/:id", async (req, res) => {
 usersRouter.get("/users/me/posts", async (req, res) => {
   const user = req.user;
   const userId = user.id;
-  const startId = req.query.startId ?? 0;
+  const startId = req.query.startId ?? null;
 
   try {
     const posts = await userModel.getUserPosts(userId, startId);
@@ -152,5 +153,38 @@ usersRouter.get("/users/:id/is-following", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+usersRouter.get("/users/me/notifications", async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const notifications = await notificationsModel.getUserNotifications(userId);
+    res.status(200).json(notifications);
+  } catch (error) {
+    logger.error(
+      "Error while fetching notifications for user " + userId + error.message
+    );
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+usersRouter.get(
+  "/users/me/has-notifications",
+  async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+      const hasNotifications = await notificationsModel.hasNotifications(
+        userId
+      );
+      res.status(200).json({ hasNotifications });
+    } catch (error) {
+      logger.error(
+        "Error while fetching notifications for user " + userId + error.message
+      );
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+);
 
 export default usersRouter;

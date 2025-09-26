@@ -28,14 +28,16 @@ const userService = {
 
   getCurrentUserPosts: async (startId) => {
     const result = await mainApi.get(
-      `${API_ROUTES.API.USERS}/me/posts?startId=${startId}`
+      `${API_ROUTES.API.USERS}/me/posts${startId ? `?startId=${startId}` : ""}`
     );
     return result.data.posts;
   },
 
   getUserPostsById: async (id, startId) => {
     const result = await mainApi.get(
-      `${API_ROUTES.API.USERS}/${id}/posts?startId=${startId}`
+      `${API_ROUTES.API.USERS}/${id}/posts${
+        startId ? `?startId=${startId}` : ""
+      }`
     );
     return result.data.posts;
   },
@@ -55,6 +57,22 @@ const userService = {
     );
 
     return result.data.isFollowing;
+  },
+
+  getNotifications: async () => {
+    const result = await mainApi.get(
+      `${API_ROUTES.API.USERS}/me/notifications`
+    );
+
+    return result.data;
+  },
+
+  hasNotifications: async () => {
+    const result = await mainApi.get(
+      `${API_ROUTES.API.USERS}/me/notifications/has-notifications`
+    );
+
+    return result.data.hasNotifications;
   },
 };
 

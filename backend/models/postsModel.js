@@ -1,6 +1,48 @@
 import pool from "../db.js";
 
 const postsModel = {
+  getPost: async (postId) => {
+    const result = await pool.query(
+      `
+      SELECT posts.*, 
+      (
+        SELECT COUNT(*) FROM comments
+        WHERE posts.id = comments.post_id
+        AND comments.parent_id IS NULL
+      ) AS comments_count
+      FROM posts 
+      WHERE id = $1
+    `,
+      [postId]
+    );
+
+    return result.rows[0];
+  },
+
+  addPost: async (post) => {
+    const result = await pool.query(
+      `
+        INSERT INTO posts(user_id, image_url, caption)
+        VALUES($1, $2, $3);
+      `,
+      [post.userId, post.imageUrl, post.caption]
+    );
+
+    return result;
+  },
+
+  getPostOwnerId: async (postId) => {
+    const result = await pool.query(
+      `
+        SELECT user_id FROM posts
+        WHERE id = $1
+      `,
+      [postId]
+    );
+
+    return result.rows[0].user_id;
+  },
+
   getPostComments: async (postId, userId, offset) => {
     const commentsCount = offset === 0 ? 10 : 5;
 
@@ -72,6 +114,16 @@ const postsModel = {
       [likeData.postId, likeData.userId]
     ),
   ],
+
+  deletePost: async (postId) => {
+    await pool.query(
+      `
+        DELETE FROM posts
+        WHERE id = $1
+      `,
+      [postId]
+    );
+  },
 
   deletePostLike: async (likeData) => {
     await pool.query(

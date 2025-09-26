@@ -16,6 +16,10 @@ export default function PostModal({
   openedPost,
   profileUser,
   isCurrentUserProfile,
+  setIsPostOpen,
+  removePostById,
+  incrementPostCount,
+  decrementPostCount,
 }) {
   const [comments, setComments] = useState(new Map());
   const [areSettingsOpen, setAreSettingsOpen] = useState(false);
@@ -72,7 +76,13 @@ export default function PostModal({
           size={{ width: "30%", height: "50%" }}
           zIndex={20}
         >
-          <PostActionsModal />
+          <PostActionsModal
+            postId={post.id}
+            setAreSettingsOpen={setAreSettingsOpen}
+            setIsPostOpen={setIsPostOpen}
+            removePostById={removePostById}
+            decrementPostCount={decrementPostCount}
+          />
         </Modal>
       )}
     </>

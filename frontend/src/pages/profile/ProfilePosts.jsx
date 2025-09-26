@@ -10,21 +10,27 @@ export default function ProfilePosts({
   maxPosts,
   profileUser,
   isCurrentUserProfile,
+  incrementPostCount,
+  decrementPostCount,
 }) {
   const { setTimedNotification } = UseNotification();
   const [postsData, setPostsData] = useState([]);
   const [isFetching, setIsFetching] = useState(true);
-  const startId = useRef(0);
+  const startId = useRef(null);
   const usedStartIds = useRef(new Set());
   const [openedPost, setOpenedPost] = useState(null);
   const [isPostOpen, setIsPostOpen] = useState(false);
+
+  function removePostById(postId) {
+    setPostsData(postsData.filter((post) => post.id != postId));
+  }
 
   const userId = profileUser.id;
 
   useEffect(() => {
     setPostsData([]);
     setIsFetching(true);
-    startId.current = 0;
+    startId.current = null;
     usedStartIds.current = new Set();
   }, [userId]);
 
@@ -87,7 +93,7 @@ export default function ProfilePosts({
       }}
       src={post.image_url}
       key={post.id}
-      className="hover:brightness-50 object-cover w-full lg:min-w-72 xl:min-w-96"
+      className="hover:brightness-50 object-cover w-full h-full lg:min-w-72 xl:min-w-96"
     />
   ));
 
@@ -103,6 +109,10 @@ export default function ProfilePosts({
             openedPost={openedPost}
             profileUser={profileUser}
             isCurrentUserProfile={isCurrentUserProfile}
+            setIsPostOpen={setIsPostOpen}
+            removePostById={removePostById}
+            incrementPostCount={incrementPostCount}
+            decrementPostCount={decrementPostCount}
           />
         </Modal>
       )}

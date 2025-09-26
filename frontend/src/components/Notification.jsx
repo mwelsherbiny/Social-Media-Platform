@@ -27,7 +27,7 @@ export default function Notification() {
 
     return (
       <div
-        className="fixed top-8 left-1/2 -translate-x-1/2 flex justify-between py-2 px-4 rounded-md text-white shadow-md flex items-center w-1/2"
+        className="fixed top-6 left-1/2 -translate-x-1/2 flex justify-between py-2 px-4 rounded-md text-white shadow-md flex items-center w-1/2 z-100"
         style={{ backgroundColor }}
         key={notification.id}
       >

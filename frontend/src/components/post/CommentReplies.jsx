@@ -6,7 +6,11 @@ import safeFetch from "@/util/safeFetch.js";
 import PostComment from "./PostComment";
 
 // if a reply is added to a reply, it's considered a reply to the parent comment
-export default function CommentReplies({ parentId, commentRepliesCount }) {
+export default function CommentReplies({
+  parentId,
+  commentRepliesCount,
+  setComment,
+}) {
   const { setTimedNotification } = UseNotification();
   const [replies, setReplies] = useState([]);
   const [repliesVisible, setRepliesVisible] = useState(false);
@@ -50,7 +54,7 @@ export default function CommentReplies({ parentId, commentRepliesCount }) {
           return (
             <div className="flex flex-col gap-4 ml-12" key={reply.id}>
               <div className="flex flex-row justify-between">
-                <PostComment comment={reply} />
+                <PostComment comment={reply} setComment={setComment} />
               </div>
             </div>
           );

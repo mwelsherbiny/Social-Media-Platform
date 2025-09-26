@@ -3,14 +3,16 @@ import Layout from "./layouts/Layout.jsx";
 import MainLayout from "@/layouts/MainLayout.jsx";
 import LoggedOutLayout from "@/layouts/LoggedOutLayout.jsx";
 import AuthPage from "@/pages/auth/AuthPage.jsx";
+import PostPage from "./components/post/PostPage.jsx";
 import HomePage from "@/pages/home/HomePage.jsx";
 import ExplorePage from "@/pages/explore/ExplorePage.jsx";
-import MessagesPage from "@/pages/messages/MessagesPage.jsx";
 import ProfilePage from "@/pages/profile/ProfilePage.jsx";
 import SettingsPage from "@/pages/settings/SettingsPage.jsx";
 import Search from "@/pages/search/Search.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 import { useAuth } from "./contexts/AuthContext.js";
+import CreatePostModal from "./components/Modals/CreatePostModal.jsx";
+import NotificationPage from "./pages/notification/NotificationPage.jsx";
 
 function App() {
   const { user } = useAuth();
@@ -21,8 +23,10 @@ function App() {
         {user ? (
           <Route element={<MainLayout />}>
             <Route index element={<HomePage />} />
-            <Route path="explore" element={<ExplorePage />} />
-            <Route path="messages" element={<MessagesPage />} />
+            <Route path="post/:id" element={<PostPage />} />
+            <Route path="notification" element={<NotificationPage />} />
+            {/* <Route path="messages" element={<MessagesPage />} /> */}
+            <Route path="create" element={<CreatePostModal />} />
             <Route path="profile/:username" element={<ProfilePage />} />
             <Route path="search" element={<Search />} />
             <Route path="settings" element={<SettingsPage />} />

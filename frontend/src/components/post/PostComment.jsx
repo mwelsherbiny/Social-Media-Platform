@@ -44,12 +44,15 @@ export default function PostComment({ comment, setComment }) {
             </p>
             <button
               className="text-gray-500 font-medium text-sm cursor-pointer"
-              onClick={() =>
+              onClick={() => {
+                console.log(comment);
+
                 setComment({
                   content: `@${comment.username} `,
-                  parentId: comment.id,
-                })
-              }
+                  parentId:
+                    comment.parent_id === null ? comment.id : comment.parent_id,
+                });
+              }}
             >
               reply
             </button>

@@ -15,9 +15,8 @@ app.use(
     origin: process.env.FRONTEND_ORIGIN,
   })
 );
-app.use(express.json());
+app.use(express.json({ type: "application/json" }));
 app.use(requestLogger);
-app.use(checkPostBody);
 app.use("/auth", authRouter);
 app.use("/api", apiRouter);
 app.use((req, res) => {

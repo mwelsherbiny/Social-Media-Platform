@@ -7,16 +7,15 @@ import { GoHomeFill } from "react-icons/go";
 import { IoSearchOutline } from "react-icons/io5";
 import { IoSearchSharp } from "react-icons/io5";
 import { MdOutlineExplore } from "react-icons/md";
-import { MdExplore } from "react-icons/md";
-import { IoPaperPlaneOutline } from "react-icons/io5";
-import { IoPaperPlane } from "react-icons/io5";
+import { IoMdNotificationsOutline } from "react-icons/io";
+import { IoMdNotifications } from "react-icons/io";
 import { MdOutlineAddBox } from "react-icons/md";
 import { MdAddBox } from "react-icons/md";
 import { useAuth } from "../../contexts/AuthContext";
 
 export default function NavBar() {
   let { user } = useAuth();
-  let [activeItem, setActiveItem] = useState("search");
+  let [activeItem, setActiveItem] = useState("home");
 
   return (
     <div className="flex flex-row fixed left-0 top-0 w-17 h-screen ">
@@ -33,13 +32,17 @@ export default function NavBar() {
             {activeItem === "search" ? <IoSearchSharp /> : <IoSearchOutline />}
           </NavItem>
           <NavItem
-            itemName="explore"
-            path="/explore"
+            itemName="notification"
+            path="/notification"
             setActiveItem={setActiveItem}
           >
-            {activeItem === "explore" ? <MdExplore /> : <MdOutlineExplore />}
+            {activeItem === "notification" ? (
+              <IoMdNotifications />
+            ) : (
+              <IoMdNotificationsOutline />
+            )}
           </NavItem>
-          <NavItem
+          {/* <NavItem
             itemName="messages"
             path="/messages"
             setActiveItem={setActiveItem}
@@ -49,8 +52,12 @@ export default function NavBar() {
             ) : (
               <IoPaperPlaneOutline />
             )}
-          </NavItem>
-          <NavItem itemName="create" setActiveItem={setActiveItem}>
+          </NavItem> */}
+          <NavItem
+            itemName="create"
+            setActiveItem={setActiveItem}
+            path={"/create"}
+          >
             {activeItem === "create" ? <MdAddBox /> : <MdOutlineAddBox />}
           </NavItem>
           <NavItem

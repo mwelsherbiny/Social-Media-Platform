@@ -65,11 +65,12 @@ export default function PostComments({
 
   const commentsEls = Array.from(comments.values()).map((comment) => {
     return (
-      <div className="flex flex-col gap-4" key={comment.id}>
+      <div className="flex flex-col gap-4 flex-grow" key={comment.id}>
         <PostComment comment={comment} setComment={setComment} />
         <CommentReplies
           parentId={comment.id}
           commentRepliesCount={comment.replies_count}
+          setComment={setComment}
         />
       </div>
     );

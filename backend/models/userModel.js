@@ -46,6 +46,8 @@ const userModel = {
   },
 
   getUserPosts: async (id, startId) => {
+    const params = startId ? [id, startId] : [id];
+
     const result = await pool.query(
       `
       SELECT posts.*, 
@@ -56,10 +58,11 @@ const userModel = {
       ) AS comments_count
       FROM posts 
       WHERE user_id = $1
-      AND id > $2
+      ${startId ? "AND id < $2" : ""}
+      ORDER BY created_at DESC
       LIMIT 20;
       `,
-      [id, startId]
+      params
     );
 
     return result.rows;
