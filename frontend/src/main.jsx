@@ -5,13 +5,16 @@ import App from "@/App.jsx";
 import { BrowserRouter } from "react-router-dom";
 import AuthProvider from "./providers/AuthProvider";
 import NotificationProvider from "./providers/NotificationProvider";
+import UserNotificationProvider from "./contexts/UserNotificationContext";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
         <NotificationProvider>
-          <App />
+          <UserNotificationProvider>
+            <App />
+          </UserNotificationProvider>
         </NotificationProvider>
       </AuthProvider>
     </BrowserRouter>

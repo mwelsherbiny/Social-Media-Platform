@@ -69,10 +69,17 @@ const userService = {
 
   hasNotifications: async () => {
     const result = await mainApi.get(
-      `${API_ROUTES.API.USERS}/me/notifications/has-notifications`
+      `${API_ROUTES.API.USERS}/me/has-notifications`
     );
 
     return result.data.hasNotifications;
+  },
+
+  readNotification: async (notification) => {
+    await mainApi.put(
+      `${API_ROUTES.API.USERS}/me/notifications/${notification.id}`,
+      { ...notification, is_read: true }
+    );
   },
 };
 

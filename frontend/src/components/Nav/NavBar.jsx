@@ -12,60 +12,54 @@ import { IoMdNotifications } from "react-icons/io";
 import { MdOutlineAddBox } from "react-icons/md";
 import { MdAddBox } from "react-icons/md";
 import { useAuth } from "../../contexts/AuthContext";
+import SocialNotificationIcon from "../SocialNotificationIcon.jsx";
+
+import { useLocation } from "react-router-dom";
 
 export default function NavBar() {
-  let { user } = useAuth();
-  let [activeItem, setActiveItem] = useState("home");
+  const { user } = useAuth();
+  const location = useLocation();
+
+  const currentPath = location.pathname;
 
   return (
-    <div className="flex flex-row fixed left-0 top-0 w-17 h-screen ">
+    <div className="flex flex-row fixed left-0 top-0 w-17 h-screen">
       <NavIconProvider>
         <div className="flex flex-col my-8 mx-4 items-center gap-5">
-          <NavItem itemName="home" path="/" setActiveItem={setActiveItem}>
-            {activeItem === "home" ? <GoHomeFill /> : <GoHome />}
+          <NavItem itemName="home" path="/">
+            {currentPath === "/" ? <GoHomeFill /> : <GoHome />}
           </NavItem>
-          <NavItem
-            itemName="search"
-            path="/search"
-            setActiveItem={setActiveItem}
-          >
-            {activeItem === "search" ? <IoSearchSharp /> : <IoSearchOutline />}
+
+          <NavItem itemName="search" path="/search">
+            {currentPath.startsWith("/search") ? (
+              <IoSearchSharp />
+            ) : (
+              <IoSearchOutline />
+            )}
           </NavItem>
-          <NavItem
-            itemName="notification"
-            path="/notification"
-            setActiveItem={setActiveItem}
-          >
-            {activeItem === "notification" ? (
+
+          <NavItem itemName="notification" path="/notification">
+            {currentPath.startsWith("/notification") ? (
               <IoMdNotifications />
             ) : (
-              <IoMdNotificationsOutline />
+              <SocialNotificationIcon />
             )}
           </NavItem>
-          {/* <NavItem
-            itemName="messages"
-            path="/messages"
-            setActiveItem={setActiveItem}
-          >
-            {activeItem === "messages" ? (
-              <IoPaperPlane />
+
+          <NavItem itemName="create" path="/create">
+            {currentPath.startsWith("/create") ? (
+              <MdAddBox />
             ) : (
-              <IoPaperPlaneOutline />
+              <MdOutlineAddBox />
             )}
-          </NavItem> */}
-          <NavItem
-            itemName="create"
-            setActiveItem={setActiveItem}
-            path={"/create"}
-          >
-            {activeItem === "create" ? <MdAddBox /> : <MdOutlineAddBox />}
           </NavItem>
-          <NavItem
-            itemName="profile"
-            path={`/profile/${user.username}`}
-            setActiveItem={setActiveItem}
-          >
-            <ProfileIcon />
+
+          <NavItem itemName="profile" path={`/profile/${user.username}`}>
+            {currentPath.startsWith(`/profile/${user.username}`) ? (
+              <ProfileIcon active />
+            ) : (
+              <ProfileIcon />
+            )}
           </NavItem>
         </div>
       </NavIconProvider>

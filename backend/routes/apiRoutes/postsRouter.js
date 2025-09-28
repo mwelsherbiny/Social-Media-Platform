@@ -6,6 +6,8 @@ import uploadImage from "../../util/uploadImage.js";
 import notificationsModel, {
   notificationTypes,
 } from "../../models/notificationsModel.js";
+import { ERROR_CODES } from "../../db.js";
+import { sendNotification, webSocketServer } from "../../webSocketServer.js";
 
 const postsRouter = express.Router();
 
@@ -58,6 +60,7 @@ postsRouter.get("/posts/:id/comments", async (req, res) => {
 postsRouter.post("/posts/:id/comments", async (req, res) => {
   const postId = req.params.id;
   const userId = req.user.id;
+  let commentId = null;
   const { parentId, content } = req.body;
 
   if (!content) {
@@ -81,7 +84,12 @@ postsRouter.post("/posts/:id/comments", async (req, res) => {
         postId: postId,
         type: notificationTypes.POST_COMMENT,
       };
-      await notificationsModel.addNotification(notification);
+      const addedNotification = await notificationsModel.addNotification(
+        notification
+      );
+
+      // send notification to client if they are online
+      sendNotification(postOwnerId, addedNotification);
     }
 
     res.status(201).json({
@@ -89,6 +97,12 @@ postsRouter.post("/posts/:id/comments", async (req, res) => {
       message: "Successfully added comment",
     });
   } catch (error) {
+    if (error.code === ERROR_CODES.UNIQUE_VIOLATION) {
+      res.status(201).json({
+        id: commentId,
+        message: "Successfully added comment",
+      });
+    }
     logger.error("Error during adding post comment: " + error.message);
     return res.status(500).json({ error: "Internal server error" });
   }
@@ -124,11 +138,21 @@ postsRouter.post("/posts/:id/likes", async (req, res) => {
         postId: postId,
         type: notificationTypes.POST_LIKE,
       };
-      await notificationsModel.addNotification(notification);
+      const addedNotification = await notificationsModel.addNotification(
+        notification
+      );
+
+      // send notification to client if they are online
+      sendNotification(postOwnerId, addedNotification);
     }
 
     return res.status(201).json({ message: "Successfully added like to post" });
   } catch (error) {
+    if (error.code === ERROR_CODES.UNIQUE_VIOLATION) {
+      return res
+        .status(201)
+        .json({ message: "Successfully added like to post" });
+    }
     logger.error("Error during adding post like: " + error.message);
     return res.status(500).json({ error: "Internal server error" });
   }

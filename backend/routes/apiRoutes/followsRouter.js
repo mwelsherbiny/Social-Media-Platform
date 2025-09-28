@@ -1,6 +1,11 @@
 import express from "express";
 import followsModel from "../../models/followsModel.js";
 import logger from "../../util/logger.js";
+import notificationsModel, {
+  notificationTypes,
+} from "../../models/notificationsModel.js";
+import { ERROR_CODES } from "../../db.js";
+import { sendNotification, webSocketServer } from "../../webSocketServer.js";
 
 const followsRouter = express.Router();
 
@@ -16,13 +21,21 @@ followsRouter.post("/follows/:id", async (req, res) => {
     const notification = {
       userId: followedId,
       actorId: followerId,
-      type: notificationTypes.POST_LIKE,
+      type: notificationTypes.FOLLOW,
     };
-    await notificationsModel.addNotification(notification);
+    const addedNotification = await notificationsModel.addNotification(
+      notification
+    );
+
+    // send notification to client if they are online
+    sendNotification(followedId, addedNotification);
 
     return res.status(201).json({ message: "User followed" });
   } catch (error) {
-    logger.error("Error during follow operation: " + error.message);
+    if (error.code === ERROR_CODES.UNIQUE_VIOLATION) {
+      return res.status(201).json({ message: "User followed" });
+    }
+    logger.error("Error during follow operation: " + error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });

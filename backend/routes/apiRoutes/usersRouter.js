@@ -84,6 +84,24 @@ usersRouter.get("/users/id/:id", async (req, res) => {
   }
 });
 
+usersRouter.get("/users/id/minimal/:id", async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    let userData = await userModel.getUserById(userId);
+    userData = excludeKeys(userData, ["password_hash"]);
+
+    return res.status(200).json({
+      user: userData,
+    });
+  } catch (error) {
+    logger.error(
+      `Server error during data fetching for user ${userId}: ${error.message}`
+    );
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 usersRouter.get("/users/me/posts", async (req, res) => {
   const user = req.user;
   const userId = user.id;
@@ -154,10 +172,12 @@ usersRouter.get("/users/:id/is-following", async (req, res) => {
   }
 });
 
+// gets notifications for a user and marks them as read
 usersRouter.get("/users/me/notifications", async (req, res) => {
   const userId = req.user.id;
 
   try {
+    await notificationsModel.readNotifications(userId);
     const notifications = await notificationsModel.getUserNotifications(userId);
     res.status(200).json(notifications);
   } catch (error) {
@@ -168,23 +188,32 @@ usersRouter.get("/users/me/notifications", async (req, res) => {
   }
 });
 
-usersRouter.get(
-  "/users/me/has-notifications",
-  async (req, res) => {
-    const userId = req.user.id;
+usersRouter.get("/users/me/has-notifications", async (req, res) => {
+  const userId = req.user.id;
 
-    try {
-      const hasNotifications = await notificationsModel.hasNotifications(
-        userId
-      );
-      res.status(200).json({ hasNotifications });
-    } catch (error) {
-      logger.error(
-        "Error while fetching notifications for user " + userId + error.message
-      );
-      res.status(500).json({ error: "Internal server error" });
-    }
+  try {
+    const hasNotifications = await notificationsModel.hasNotifications(userId);
+    res.status(200).json({ hasNotifications });
+  } catch (error) {
+    logger.error(
+      "Error while fetching notifications for user " + userId + error.message
+    );
+    res.status(500).json({ error: "Internal server error" });
   }
-);
+});
+
+usersRouter.put("/users/me/notifications/:id", async (req, res) => {
+  const notificationId = req.params.id;
+
+  try {
+    await notificationsModel.readNotification(notificationId);
+    res
+      .status(201)
+      .json({ message: "Successfully read notification " + notificationId });
+  } catch (error) {
+    logger.error("Error while reading notifications " + notificationId);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 export default usersRouter;
