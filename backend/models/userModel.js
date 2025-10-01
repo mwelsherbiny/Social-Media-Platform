@@ -120,6 +120,19 @@ const userModel = {
 
     return result.rows.length > 0;
   },
+
+  updateUser: async (user) => {
+    console.log(user);
+    await pool.query(
+      `
+        UPDATE users
+        SET bio = $1,
+        profile_picture_url = $2
+        WHERE id = $3
+      `,
+      [user.bio, user.profilePictureUrl, user.id]
+    );
+  },
 };
 
 export default userModel;

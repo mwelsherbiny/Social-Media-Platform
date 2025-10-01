@@ -3,6 +3,8 @@ import userModel from "../../models/userModel.js";
 import logger from "../../util/logger.js";
 import excludeKeys from "../../util/excludeKeys.js";
 import notificationsModel from "../../models/notificationsModel.js";
+import imageUpload from "../../middleware/imageUpload.js";
+import uploadImage from "../../util/uploadImage.js";
 
 const usersRouter = express.Router();
 
@@ -38,6 +40,37 @@ usersRouter.get("/users/me", async (req, res) => {
       `Server error during data fetching for user ${user.id}: ${error.message}`
     );
     return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+usersRouter.put("/users/me", imageUpload.single("file"), async (req, res) => {
+  const user = req.user;
+  const file = req.file;
+  const bio = req.body.bio;
+
+  const updatedUser = {
+    id: user.id,
+    bio,
+    profilePictureUrl: user.profile_picture_url,
+  };
+
+  try {
+    if (file) {
+      const imageKey = await uploadImage(file);
+      const imageUrl = `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com/${imageKey}`;
+      updatedUser.profilePictureUrl = imageUrl;
+    }
+
+    await userModel.updateUser(updatedUser);
+
+    res.status(201).json({
+      message: "Successfuly updated profile",
+      bio: updatedUser.bio,
+      profilePictureUrl: updatedUser.profilePictureUrl,
+    });
+  } catch (error) {
+    logger.error("Error during updating user: " + error.message);
+    return res.status(500).json({ error: "Error uploading post" });
   }
 });
 

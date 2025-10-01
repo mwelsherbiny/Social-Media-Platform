@@ -24,7 +24,7 @@ authRouter.post("/register", async (req, res) => {
     });
 
     const safeUser = excludeKeys(user, ["password_hash", "email"]);
-    const tokenData = { id: safeUser.id };
+    const tokenData = safeUser;
 
     const token = jwt.sign(tokenData, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRATION,
@@ -74,7 +74,7 @@ authRouter.post("/login", async (req, res) => {
       );
 
       const safeUser = excludeKeys(user, ["password_hash"]);
-      const tokenData = { id: safeUser.id };
+      const tokenData = safeUser;
       const token = jwt.sign(tokenData, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRATION,
       });

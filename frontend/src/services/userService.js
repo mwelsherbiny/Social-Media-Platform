@@ -81,6 +81,11 @@ const userService = {
       { ...notification, is_read: true }
     );
   },
+
+  updateUser: async (newUser) => {
+    const result = await mainApi.put(`${API_ROUTES.API.USERS}/me`, newUser);
+    return result.data;
+  },
 };
 
 export default userService;

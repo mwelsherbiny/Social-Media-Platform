@@ -8,8 +8,7 @@ import PostCaptionForm from "../create_post/PostCaptionForm";
 import HLine from "../HLine";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import postService from "../../services/postService";
-
-const supportedTypes = ["image/png", "image/jpeg"];
+import supportedTypes from "../../constants/supportedImageTypes";
 
 export default function CreatePostModal() {
   const navigate = useNavigate();

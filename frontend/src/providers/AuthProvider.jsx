@@ -2,10 +2,12 @@ import { AuthContext } from "../contexts/AuthContext";
 import useStorage from "@/hooks/useStorage.js";
 import authService from "@/services/authService.js";
 import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useStorage("user");
   const [token, setToken] = useStorage("token");
+  const navigate = useNavigate();
 
   useEffect(() => {
     function syncWithStorage() {
@@ -38,10 +40,13 @@ export default function AuthProvider({ children }) {
   const logout = () => {
     setUser(null);
     setToken(null);
+    navigate("/");
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ user, token, setUser, login, register, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

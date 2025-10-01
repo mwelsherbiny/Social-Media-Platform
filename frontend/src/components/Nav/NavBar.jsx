@@ -56,9 +56,9 @@ export default function NavBar() {
 
           <NavItem itemName="profile" path={`/profile/${user.username}`}>
             {currentPath.startsWith(`/profile/${user.username}`) ? (
-              <ProfileIcon active />
+              <ProfileIcon src={user.profile_picture_url} />
             ) : (
-              <ProfileIcon />
+              <ProfileIcon src={user.profile_picture_url} />
             )}
           </NavItem>
         </div>

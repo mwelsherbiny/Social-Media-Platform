@@ -7,7 +7,7 @@ import notificationsModel, {
   notificationTypes,
 } from "../../models/notificationsModel.js";
 import { ERROR_CODES } from "../../db.js";
-import { sendNotification, webSocketServer } from "../../webSocketServer.js";
+import { sendNotification } from "../../webSocketServer.js";
 
 const postsRouter = express.Router();
 
