@@ -1,18 +1,14 @@
 import userService from "../../services/userService";
 import { useState, useEffect, useRef } from "react";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import { UseNotification } from "../../contexts/NotificationContext";
 import safeFetch from "../../util/safeFetch";
 import Modal from "@/components/Modals/Modal";
 import PostModal from "@/components/Modals/PostModal";
+import { useAuth } from "../../contexts/AuthContext";
+import FeedPost from "./FeedPost";
+import HLine from "../../components/HLine";
 
-export default function ProfilePosts({
-  maxPosts,
-  profileUser,
-  isCurrentUserProfile,
-  incrementPostCount,
-  decrementPostCount,
-}) {
+export default function FeedPosts() {
   const { setTimedNotification } = UseNotification();
   const [postsData, setPostsData] = useState([]);
   const [isFetching, setIsFetching] = useState(true);
@@ -20,6 +16,7 @@ export default function ProfilePosts({
   const prevCreatedAt = useRef(new Set());
   const [openedPost, setOpenedPost] = useState(null);
   const [isPostOpen, setIsPostOpen] = useState(false);
+  const { user: profileUser } = useAuth();
 
   function removePostById(postId) {
     setPostsData(postsData.filter((post) => post.id != postId));
@@ -53,9 +50,7 @@ export default function ProfilePosts({
       if (isFetching && !prevCreatedAt.current.has(createdAt.current)) {
         prevCreatedAt.current.add(createdAt.current);
 
-        let result = isCurrentUserProfile
-          ? await userService.getCurrentUserPosts(createdAt.current)
-          : await userService.getUserPostsById(userId, createdAt.current);
+        let result = await userService.getUserFeed(createdAt.current);
 
         setIsFetching(false);
         setPostsData((prev) => {
@@ -75,45 +70,35 @@ export default function ProfilePosts({
     safeFetch(fetchData, (error) =>
       setTimedNotification({ text: error.response?.data?.error, type: "error" })
     );
-  }, [
-    isCurrentUserProfile,
-    isFetching,
-    maxPosts,
-    setTimedNotification,
-    userId,
-  ]);
+  }, [isFetching, setTimedNotification]);
 
-  if (maxPosts === 0) return null;
-  if (postsData.length === 0) return <LoadingSpinner />;
+  if (postsData.length === 0) return null;
 
-  const postsEls = postsData.map((post) => (
-    <img
-      onClick={() => {
-        setOpenedPost(post);
-        setIsPostOpen(true);
-      }}
-      src={post.image_url}
-      key={post.id}
-      className="hover:brightness-50 object-cover w-full h-full lg:min-w-72 xl:min-w-96"
-    />
-  ));
+  const postsEls = postsData.map((post) => {
+    return (
+      <div key={post.id}>
+        <FeedPost
+          post={post}
+          setOpenedPost={setOpenedPost}
+          setIsPostOpen={setIsPostOpen}
+        />
+        <HLine />
+      </div>
+    );
+  });
 
   return (
     <>
-      <div className="flex justify-center w-full">
-        <div className="grid grid-cols-3 gap-[1px]">{postsEls}</div>
-      </div>
+      <div className="flex flex-col gap-1 max-w-[600px] w-full">{postsEls}</div>
 
       {isPostOpen && (
         <Modal isOpen={isPostOpen} setIsOpen={setIsPostOpen} zIndex={10}>
           <PostModal
             openedPost={openedPost}
             profileUser={profileUser}
-            isCurrentUserProfile={isCurrentUserProfile}
+            isCurrentUserProfile={false}
             setIsPostOpen={setIsPostOpen}
             removePostById={removePostById}
-            incrementPostCount={incrementPostCount}
-            decrementPostCount={decrementPostCount}
           />
         </Modal>
       )}

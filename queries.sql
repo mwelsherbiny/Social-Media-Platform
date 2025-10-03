@@ -11,7 +11,8 @@ SELECT * FROM posts WHERE user_id IN (
     WHERE follower_id = @logged_in_user_id
 )
 ORDER BY created_at DESC
-LIMIT 10 OFFSET @current_offset;
+WHERE posts.id > @startId
+LIMIT 10;
 
 -- Seach Query
 -- This query fetches users id based on the username

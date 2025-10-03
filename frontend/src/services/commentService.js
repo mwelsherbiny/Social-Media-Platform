@@ -3,6 +3,10 @@ import API_ROUTES from "../constants/apiRoutes";
 
 const commentService = {
   getCommentReplies: async (commentId) => {
+    if (!commentId) {
+      return;
+    }
+
     const result = await mainApi.get(
       `${API_ROUTES.API.COMMENTS}/${commentId}/replies`
     );
@@ -11,14 +15,26 @@ const commentService = {
   },
 
   deleteComment: async (commentId) => {
+    if (!commentId) {
+      return;
+    }
+
     await mainApi.delete(`${API_ROUTES.API.COMMENTS}/${commentId}`);
   },
 
   addCommentLike: async (commentId) => {
+    if (!commentId) {
+      return;
+    }
+
     await mainApi.post(`${API_ROUTES.API.COMMENTS}/${commentId}/likes`, {});
   },
 
   deleteCommentLike: async (commentId) => {
+    if (!commentId) {
+      return;
+    }
+    
     await mainApi.delete(`${API_ROUTES.API.COMMENTS}/${commentId}/likes`);
   },
 };

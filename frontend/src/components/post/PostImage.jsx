@@ -1,3 +1,3 @@
 export default function PostImage({ imageUrl }) {
-  return <img src={imageUrl} className="w-[100%] md:max-w-[55%]" />;
+  return <img src={imageUrl} className="w-full md:max-w-[55%]" />;
 }

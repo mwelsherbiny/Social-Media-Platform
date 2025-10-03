@@ -2,17 +2,20 @@ import ProfileIcon from "./ProfileIcon";
 import MyProfileActions from "./MyProfileActions";
 import ProfileActions from "./ProfileActions";
 import { useState } from "react";
+import ExpandableText from "../../components/ExpandableText";
 
 export default function ProfileHeader({ profileUser, isCurrentUserProfile }) {
   const [followersCount, setFollowersCount] = useState(
     profileUser.followersCount
   );
 
+  console.log(profileUser);
+
   return (
     <div className="flex flex-row gap-8">
-      <ProfileIcon size="8rem" src={profileUser.profile_picture_url} />
+      <ProfileIcon size="6rem" src={profileUser.profile_picture_url} />
       <div className="flex flex-col gap-4">
-        <div className="flex flex-row items-center gap-4">
+        <div className="flex flex-row flex-wrap items-center gap-4">
           <p className="text-xl">{profileUser.username}</p>
           {isCurrentUserProfile ? (
             <MyProfileActions />
@@ -36,7 +39,10 @@ export default function ProfileHeader({ profileUser, isCurrentUserProfile }) {
         </div>
         <div>
           <p className="font-semibold">{profileUser.name}</p>
-          <p className="break-words">{profileUser.bio}</p>
+          <ExpandableText
+            text={profileUser.bio}
+            classes={["max-w-[150px] sm:max-w-[300px] inline-block"]}
+          />
         </div>
       </div>
     </div>

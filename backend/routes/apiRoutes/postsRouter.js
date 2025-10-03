@@ -8,6 +8,7 @@ import notificationsModel, {
 } from "../../models/notificationsModel.js";
 import { ERROR_CODES } from "../../db.js";
 import { sendNotification } from "../../webSocketServer.js";
+import deleteImage from "../../util/deleteImage.js";
 
 const postsRouter = express.Router();
 
@@ -162,7 +163,8 @@ postsRouter.delete("/posts/:id", async (req, res) => {
   const postId = req.params.id;
 
   try {
-    await postsModel.deletePost(postId);
+    const deletedPost = await postsModel.deletePost(postId);
+    await deleteImage(deletedPost.image_url);
     return res.sendStatus(204);
   } catch (error) {
     logger.error("Error during deleting post: " + error.message);

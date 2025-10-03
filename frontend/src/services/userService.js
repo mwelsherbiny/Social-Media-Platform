@@ -3,6 +3,10 @@ import API_ROUTES from "../constants/apiRoutes";
 
 const userService = {
   searchByUsername: async (username) => {
+    if (!username) {
+      return;
+    }
+
     const result = await mainApi.get(
       `${API_ROUTES.API.USERS}/search/${username}`
     );
@@ -15,6 +19,10 @@ const userService = {
   },
 
   getUserByUsername: async (username) => {
+    if (!username) {
+      return;
+    }
+
     const result = await mainApi.get(
       `${API_ROUTES.API.USERS}/username/${username}`
     );
@@ -22,21 +30,27 @@ const userService = {
   },
 
   getUserById: async (id) => {
+    if (!id) {
+      return;
+    }
+
     const result = await mainApi.get(`${API_ROUTES.API.USERS}/id/${id}`);
     return result.data.user;
   },
 
-  getCurrentUserPosts: async (startId) => {
+  getCurrentUserPosts: async (createdAt) => {
     const result = await mainApi.get(
-      `${API_ROUTES.API.USERS}/me/posts${startId ? `?startId=${startId}` : ""}`
+      `${API_ROUTES.API.USERS}/me/posts${
+        createdAt ? `?createdAt=${createdAt}` : ""
+      }`
     );
     return result.data.posts;
   },
 
-  getUserPostsById: async (id, startId) => {
+  getUserPostsById: async (id, createdAt) => {
     const result = await mainApi.get(
       `${API_ROUTES.API.USERS}/${id}/posts${
-        startId ? `?startId=${startId}` : ""
+        createdAt ? `?createdAt=${createdAt}` : ""
       }`
     );
     return result.data.posts;
@@ -52,6 +66,10 @@ const userService = {
   },
 
   isFollowing: async (followedUserID) => {
+    if (!followedUserID) {
+      return;
+    }
+
     const result = await mainApi.get(
       `${API_ROUTES.API.USERS}/${followedUserID}/is-following`
     );
@@ -76,6 +94,10 @@ const userService = {
   },
 
   readNotification: async (notification) => {
+    if (!notification) {
+      return;
+    }
+
     await mainApi.put(
       `${API_ROUTES.API.USERS}/me/notifications/${notification.id}`,
       { ...notification, is_read: true }
@@ -84,6 +106,15 @@ const userService = {
 
   updateUser: async (newUser) => {
     const result = await mainApi.put(`${API_ROUTES.API.USERS}/me`, newUser);
+    return result.data;
+  },
+
+  getUserFeed: async (createdAt) => {
+    const result = await mainApi.get(
+      `${API_ROUTES.API.USERS}/me/feed${
+        createdAt ? `?createdAt=${createdAt}` : ""
+      }`
+    );
     return result.data;
   },
 };

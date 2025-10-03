@@ -23,9 +23,9 @@ export default function NavBar() {
   const currentPath = location.pathname;
 
   return (
-    <div className="flex flex-row fixed left-0 top-0 w-17 h-screen">
+    <div className="flex flex-col h-12 justify-center bg-white fixed bottom-0 w-screen sm:flex-row sm:left-0 sm:top-0 sm:w-fit sm:h-screen">
       <NavIconProvider>
-        <div className="flex flex-col my-8 mx-4 items-center gap-5">
+        <div className="flex flex-row my-2 mx-2 w-full justify-center sm:justify-start sm:flex-col sm:my-8 sm:mx-4 items-center gap-8 sm:gap-4">
           <NavItem itemName="home" path="/">
             {currentPath === "/" ? <GoHomeFill /> : <GoHome />}
           </NavItem>

@@ -46,7 +46,11 @@ usersRouter.get("/users/me", async (req, res) => {
 usersRouter.put("/users/me", imageUpload.single("file"), async (req, res) => {
   const user = req.user;
   const file = req.file;
-  const bio = req.body.bio;
+  let bio = req.body.bio;
+
+  if (bio) {
+    bio = bio.trim();
+  }
 
   const updatedUser = {
     id: user.id,
@@ -138,10 +142,10 @@ usersRouter.get("/users/id/minimal/:id", async (req, res) => {
 usersRouter.get("/users/me/posts", async (req, res) => {
   const user = req.user;
   const userId = user.id;
-  const startId = req.query.startId ?? null;
+  const createdAt = req.query.createdAt ?? null;
 
   try {
-    const posts = await userModel.getUserPosts(userId, startId);
+    const posts = await userModel.getUserPosts(userId, createdAt);
     return res.status(200).json({ posts });
   } catch (error) {
     logger.error(
@@ -153,10 +157,10 @@ usersRouter.get("/users/me/posts", async (req, res) => {
 
 usersRouter.get("/users/:id/posts", async (req, res) => {
   const userId = req.params.id;
-  const startId = req.query.startId ?? 0;
+  const createdAt = req.query.createdAt ?? 0;
 
   try {
-    const posts = await userModel.getUserPosts(userId, startId);
+    const posts = await userModel.getUserPosts(userId, createdAt);
     return res.status(200).json({ posts });
   } catch (error) {
     logger.error(
@@ -246,6 +250,19 @@ usersRouter.put("/users/me/notifications/:id", async (req, res) => {
   } catch (error) {
     logger.error("Error while reading notifications " + notificationId);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+usersRouter.get("/users/me/feed", async (req, res) => {
+  const userId = req.user.id;
+  const createdAt = req.query.createdAt;
+
+  try {
+    const posts = await userModel.getUserFeed(userId, createdAt);
+    return res.status(200).json(posts);
+  } catch (error) {
+    logger.error("Error while fetching user feed " + error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
 

@@ -36,6 +36,8 @@ export default function CreatePostModal() {
     formData.append("caption", caption);
 
     await postService.addPost(formData);
+
+    setIsOpen(false);
   }
 
   useEffect(() => {

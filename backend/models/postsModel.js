@@ -116,13 +116,16 @@ const postsModel = {
   ],
 
   deletePost: async (postId) => {
-    await pool.query(
+    const result = await pool.query(
       `
         DELETE FROM posts
         WHERE id = $1
+        RETURNING *
       `,
       [postId]
     );
+
+    return result.rows[0];
   },
 
   deletePostLike: async (likeData) => {

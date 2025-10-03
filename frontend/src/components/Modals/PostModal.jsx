@@ -18,13 +18,15 @@ export default function PostModal({
   isCurrentUserProfile,
   setIsPostOpen,
   removePostById,
-  incrementPostCount,
   decrementPostCount,
 }) {
   const [comments, setComments] = useState(new Map());
   const [areSettingsOpen, setAreSettingsOpen] = useState(false);
   const [post, setPost] = useState(openedPost);
   const [comment, setComment] = useState({ content: "", replyTo: null });
+  const [commentsCount, setCommentsCount] = useState(
+    Number(post.comments_count)
+  );
 
   return (
     <>
@@ -45,7 +47,7 @@ export default function PostModal({
               comments={comments}
               setComments={setComments}
               postId={post.id}
-              commentsCount={Number(post.comments_count)}
+              commentsCount={commentsCount}
               setComment={setComment}
             />
           </PostMainContent>
@@ -60,6 +62,7 @@ export default function PostModal({
 
           <CommentForm
             comment={comment}
+            setCommentsCount={setCommentsCount}
             setComments={setComments}
             setComment={setComment}
             post={post}

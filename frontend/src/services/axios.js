@@ -26,6 +26,7 @@ mainApi.interceptors.response.use(
   (res) => res,
   (error) => {
     if (error.response?.status === 401) {
+      console.log("HELLO");
       localStorage.removeItem("user");
       localStorage.removeItem("token");
       window.location.href = "/";

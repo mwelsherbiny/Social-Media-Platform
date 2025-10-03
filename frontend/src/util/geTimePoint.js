@@ -11,6 +11,7 @@ function pluralize(item, quantity) {
 
 export default function getTimePointString(date) {
   let currDate = new Date();
+
   const secondsDiff = (currDate - date) / 1000;
 
   if (secondsDiff <= 0 || secondsDiff < minuteSeconds) {

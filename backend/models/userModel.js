@@ -45,8 +45,8 @@ const userModel = {
     return result.rows[0];
   },
 
-  getUserPosts: async (id, startId) => {
-    const params = startId ? [id, startId] : [id];
+  getUserPosts: async (id, createdAt) => {
+    const params = createdAt ? [id, createdAt] : [id];
 
     const result = await pool.query(
       `
@@ -58,7 +58,7 @@ const userModel = {
       ) AS comments_count
       FROM posts 
       WHERE user_id = $1
-      ${startId ? "AND id < $2" : ""}
+      ${createdAt ? "AND created_at < $2" : ""}
       ORDER BY created_at DESC
       LIMIT 20;
       `,
@@ -122,7 +122,6 @@ const userModel = {
   },
 
   updateUser: async (user) => {
-    console.log(user);
     await pool.query(
       `
         UPDATE users
@@ -132,6 +131,32 @@ const userModel = {
       `,
       [user.bio, user.profilePictureUrl, user.id]
     );
+  },
+
+  getUserFeed: async (id, createdAt) => {
+    const params = createdAt ? [id, createdAt] : [id];
+
+    const result = await pool.query(
+      `
+        SELECT
+          posts.*, 
+          users.username, 
+          users.profile_picture_url,
+          COUNT(comments.id) AS comments_count
+        FROM follows 
+        JOIN posts ON posts.user_id = followed_id
+        JOIN users ON users.id = posts.user_id
+        LEFT JOIN comments ON comments.post_id = posts.id
+        WHERE follower_id = $1
+        AND posts.created_at > NOW() - INTERVAL '7 days'
+        ${createdAt ? "AND posts.created_at < $2" : ""}
+        GROUP BY posts.id, users.id
+        ORDER BY posts.created_at DESC
+        LIMIT 10
+      `,
+      params
+    );
+    return result.rows;
   },
 };
 

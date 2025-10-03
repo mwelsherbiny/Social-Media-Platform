@@ -15,30 +15,19 @@ import CreatePostModal from "./components/Modals/CreatePostModal.jsx";
 import NotificationPage from "./pages/notification/NotificationPage.jsx";
 
 function App() {
-  const { user } = useAuth();
-
   return (
     <Routes>
       <Route element={<Layout />}>
-        {user ? (
-          <Route element={<MainLayout />}>
-            <Route index element={<HomePage />} />
-            <Route path="post/:id" element={<PostPage />} />
-            <Route path="notification" element={<NotificationPage />} />
-            {/* <Route path="messages" element={<MessagesPage />} /> */}
-            <Route path="create" element={<CreatePostModal />} />
-            <Route path="profile/:username" element={<ProfilePage />} />
-            <Route path="search" element={<Search />} />
-            <Route path="settings" element={<SettingsPage />} />
-          </Route>
-        ) : (
-          <>
-            <Route path="/" element={<AuthPage />} />
-            <Route path="/" element={<LoggedOutLayout />}>
-              <Route path="explore" element={<ExplorePage />} />
-            </Route>
-          </>
-        )}
+        <Route element={<MainLayout />}>
+          <Route index element={<HomePage />} />
+          <Route path="post/:id" element={<PostPage />} />
+          <Route path="notification" element={<NotificationPage />} />
+          {/* <Route path="messages" element={<MessagesPage />} /> */}
+          <Route path="create" element={<CreatePostModal />} />
+          <Route path="profile/:username" element={<ProfilePage />} />
+          <Route path="search" element={<Search />} />
+          <Route path="settings" element={<SettingsPage />} />
+        </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

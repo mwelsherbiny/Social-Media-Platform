@@ -76,9 +76,9 @@ export default function ProfileActions({ userId, setFollowersCount }) {
       >
         {isFollowing ? "Unfollow" : "Follow"}
       </button>
-      <button className="bg-gray-200 text-black rounded-md px-4 py-1 font-semibold cursor-pointer">
+      {/* <button className="bg-gray-200 text-black rounded-md px-4 py-1 font-semibold cursor-pointer">
         Message
-      </button>
+      </button> */}
     </div>
   );
 }

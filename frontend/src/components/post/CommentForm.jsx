@@ -2,6 +2,7 @@ import postService from "../../services/postService";
 
 export default function CommentForm({
   comment,
+  setCommentsCount,
   setComment,
   setComments,
   post,
@@ -40,8 +41,6 @@ export default function CommentForm({
       });
 
       if (comment.parentId) {
-        console.log(comment.parentId);
-
         const parentComment = updatedComments.get(comment.parentId);
 
         updatedComments.set(comment.parentId, {
@@ -49,6 +48,10 @@ export default function CommentForm({
           replies_count: parseInt(parentComment.replies_count) + 1,
         });
       }
+
+      setCommentsCount((prev) => {
+        return prev + 1;
+      });
 
       return updatedComments;
     });

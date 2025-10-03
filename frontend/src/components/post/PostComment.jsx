@@ -3,6 +3,7 @@ import ProfileIcon from "../../pages/profile/ProfileIcon";
 import CommentLikeButton from "./CommentLikeButton";
 import { useState } from "react";
 import commentService from "../../services/commentService";
+import ExpandableText from "../ExpandableText";
 
 export default function PostComment({ comment, setComment }) {
   const [isLiked, setIsLiked] = useState(comment.liked_by_user);
@@ -32,8 +33,8 @@ export default function PostComment({ comment, setComment }) {
         <ProfileIcon src={comment.profile_picture_url} />
         <div className="flex flex-col justify-start">
           <p>
-            <span className="font-semibold">{comment.username} </span>
-            {comment.content}
+            <span className="font-semibold align-top">{comment.username} </span>
+            <ExpandableText text={comment.content} limit={50} classes={[""]} />
           </p>
           <div className="flex flex-row gap-4 items-center">
             <p className="text-gray-500">

@@ -70,9 +70,11 @@ export default function PostFooter({ postId, postDate }) {
       </div>
       <div className="flex flex-col">
         <p className="font-semibold">{likesCount} likes</p>
-        <p className="text-gray-500">
-          {getTimePointString(new Date(postDate))}
-        </p>
+        {postDate ? (
+          <p className="text-gray-500">
+            {getTimePointString(new Date(postDate))}
+          </p>
+        ) : null}
       </div>
     </div>
   );

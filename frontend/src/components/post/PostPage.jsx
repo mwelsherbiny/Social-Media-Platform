@@ -13,6 +13,7 @@ import CommentForm from "./CommentForm";
 import postService from "../../services/postService";
 import userService from "./../../services/userService";
 import { useAuth } from "../../contexts/AuthContext";
+import NotFoundPage from "../../pages/NotFoundPage";
 
 export default function PostPage() {
   const { user: currentUser } = useAuth();
@@ -22,6 +23,7 @@ export default function PostPage() {
   const [comments, setComments] = useState(new Map());
   const [areSettingsOpen, setAreSettingsOpen] = useState(false);
   const [comment, setComment] = useState({ content: "", replyTo: null });
+  const [isFound, setIsFound] = useState(true);
 
   async function getUserData(userId) {
     const user = await userService.getUserById(userId);
@@ -30,59 +32,71 @@ export default function PostPage() {
 
   useEffect(() => {
     async function fetchData() {
-      const post = await postService.getPost(postId);
-      if (parseInt(currentUser.id) === parseInt(post.user_id))
-        setUser(currentUser);
-      else await getUserData(post.user_id);
-      setPost(post);
+      try {
+        const post = await postService.getPost(postId);
+        if (parseInt(currentUser.id) === parseInt(post.user_id))
+          setUser(currentUser);
+        else await getUserData(post.user_id);
+        setPost(post);
+      } catch (error) {
+        if (error.status === 404) {
+          setIsFound(false);
+        }
+      }
     }
 
     fetchData();
-  }, [postId]);
+  }, [currentUser, postId]);
+
+  if (!isFound) {
+    return <NotFoundPage />;
+  }
 
   if (!post || !user) return <p>Loading...</p>;
 
   return (
-    <Post>
-      <PostImage imageUrl={post.image_url} />
+    <div className="sm:p-16">
+      <Post>
+        <PostImage imageUrl={post.image_url} />
 
-      <PostDetails>
-        <PostHeader
-          profileUser={user}
-          isCurrentUserProfile={user.id === currentUser.id}
-          areSettingsOpen={areSettingsOpen}
-          setAreSettingsOpen={setAreSettingsOpen}
-        />
-        <HLine />
-
-        <PostMainContent>
-          <PostCaption profileUser={user} post={post} />
-          <PostComments
-            comments={comments}
-            setComments={setComments}
-            postId={post.id}
-            commentsCount={Number(post.comments_count)}
-            setComment={setComment}
+        <PostDetails>
+          <PostHeader
+            profileUser={user}
+            isCurrentUserProfile={user.id === currentUser.id}
+            areSettingsOpen={areSettingsOpen}
+            setAreSettingsOpen={setAreSettingsOpen}
           />
-        </PostMainContent>
-        <HLine />
+          <HLine />
 
-        <PostFooter
-          postId={post.id}
-          postDate={post.created_at}
-          setPost={setPost}
-        />
-        <HLine />
+          <PostMainContent>
+            <PostCaption profileUser={user} post={post} />
+            <PostComments
+              comments={comments}
+              setComments={setComments}
+              postId={post.id}
+              commentsCount={Number(post.comments_count)}
+              setComment={setComment}
+            />
+          </PostMainContent>
+          <HLine />
 
-        <CommentForm
-          comment={comment}
-          setComments={setComments}
-          setComment={setComment}
-          post={post}
-          setPost={setPost}
-          user={user}
-        />
-      </PostDetails>
-    </Post>
+          <PostFooter
+            postId={post.id}
+            postDate={post.created_at}
+            setPost={setPost}
+          />
+          <HLine />
+
+          <CommentForm
+            comment={comment}
+            setComments={setComments}
+            setComment={setComment}
+            post={post}
+            setPost={setPost}
+            user={user}
+          />
+        </PostDetails>
+      </Post>{" "}
+    </div>
   );
 }
