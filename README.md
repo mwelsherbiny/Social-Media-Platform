@@ -2,6 +2,8 @@
 
 This document outlines the design and features of a social media application similar to Instagram. The application allows users to share photos, follow other users, like and comment on posts, and send messages.
 
+# [Watch The Demo](https://youtu.be/7iTrLRZMz-8)
+
 # Technology Stack
 
 - **Frontend**: React.js
