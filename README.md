@@ -219,10 +219,6 @@ This document outlines the design and features of a social media application sim
   - Requires auth token
   - Debounced search to reduce API calls
 
-## Messages
-
-TODO
-
 ## Profiles
 
 - **Purpose**: Allows users to view their own profile or another user's profile.
